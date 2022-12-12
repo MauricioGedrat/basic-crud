@@ -18,7 +18,7 @@ interface ApplicationState {
   editItem: Register | undefined;
   setEditItem: React.Dispatch<React.SetStateAction<Register | undefined>>;
   handleDelete: (id: number) => void;
-  handleEdit: (editRegister: Register) => void
+  handleEdit: (editRegister: Register) => void;
   data: Register[];
 }
 
@@ -29,7 +29,7 @@ const ApplicationContext = createContext<ApplicationState>({
   setEditItem: () => {},
   data: [],
   handleDelete: () => {},
-  handleEdit: () => {}
+  handleEdit: () => {},
 });
 
 const useApplicationState = (): ApplicationState => {
@@ -37,11 +37,13 @@ const useApplicationState = (): ApplicationState => {
   const [editItem, setEditItem] = useState<Register | undefined>();
   const [jsonImported, setJsonImported] = useState<Register[]>(records);
 
-  const data: Register[] = jsonImported.filter((row) => {
-    return Object.values(row).some((s) =>
-      ("" + s).toLowerCase().includes(search.toLowerCase())
-    );
-  }).sort((x) => x.id);
+  const data: Register[] = jsonImported
+    .filter((row) => {
+      return Object.values(row).some((s) =>
+        ("" + s).toLowerCase().includes(search.toLowerCase())
+      );
+    })
+    .sort((x, y) => x.id > y.id ? 1 : -1);
 
   const handleDelete = (id: number) => {
     const result = jsonImported.filter((x) => x.id !== id);
